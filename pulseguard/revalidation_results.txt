@@ -1,0 +1,76 @@
+==============================================================================
+PULSEGUARD RE-VALIDATION
+Generated: 2026-09-21 15:46:25
+MIN_SD_BPM = 5.0
+==============================================================================
+
+==============================================================================
+TABLE 2 - Synthetic data (SD-scaled anomalies)
+  961 readings, 61 labelled anomalous
+==============================================================================
+Metric                 |   PulseGuard |   PulseGuard |        Fixed
+                       | (before fix) |  (after fix) |   60-100 bpm
+------------------------------------------------------------------------------
+Accuracy               |        0.869 |        0.984 |        0.942
+Precision              |        0.324 |        0.883 |        1.000
+Recall (Sensitivity)   |        0.984 |        0.869 |        0.082
+F1 Score               |        0.488 |        0.876 |        0.152
+False Positive Rate    |        0.139 |        0.008 |        0.000
+TP / FP / FN / TN      | 60/125/1/775 |   53/7/8/893 |   5/0/56/900
+------------------------------------------------------------------------------
+Effect of the SD floor: false positives 125 -> 7 (94.4% reduction), precision 0.324 -> 0.883, recall 0.984 -> 0.869
+
+==============================================================================
+TABLE 2b - Synthetic quiet baseline (absolute-bpm anomalies)
+  961 readings, 61 labelled anomalous
+==============================================================================
+Metric                 |   PulseGuard |   PulseGuard |        Fixed
+                       | (before fix) |  (after fix) |   60-100 bpm
+------------------------------------------------------------------------------
+Accuracy               |        0.911 |        0.993 |        0.968
+Precision              |        0.415 |        1.000 |        1.000
+Recall (Sensitivity)   |        1.000 |        0.885 |        0.492
+F1 Score               |        0.587 |        0.939 |        0.659
+False Positive Rate    |        0.096 |        0.000 |        0.000
+TP / FP / FN / TN      |  61/86/0/814 |   54/0/7/900 |  30/0/31/900
+------------------------------------------------------------------------------
+Effect of the SD floor: false positives 86 -> 0 (100.0% reduction), precision 0.415 -> 1.000, recall 1.000 -> 0.885
+Streaming MIT-BIH record '100' from PhysioNet (small download, ~1-2 MB)...
+
+==============================================================================
+TABLE 3 - MIT-BIH record 100 (real ECG-derived HR)
+  2272 readings, 34 labelled anomalous
+==============================================================================
+Metric                 |   PulseGuard |   PulseGuard |        Fixed
+                       | (before fix) |  (after fix) |   60-100 bpm
+------------------------------------------------------------------------------
+Accuracy               |        0.845 |        0.971 |        0.989
+Precision              |        0.086 |        0.340 |        0.692
+Recall (Sensitivity)   |        0.971 |        0.971 |        0.529
+F1 Score               |        0.158 |        0.504 |        0.600
+False Positive Rate    |        0.157 |        0.029 |        0.004
+TP / FP / FN / TN      | 33/351/1/1887 | 33/64/1/2174 | 18/8/16/2230
+------------------------------------------------------------------------------
+Effect of the SD floor: false positives 351 -> 64 (81.8% reduction), precision 0.086 -> 0.340, recall 0.971 -> 0.971
+
+==============================================================================
+TABLE 4 - PPG-DaLiA S1_hr_labels.csv (real PPG-derived HR)
+  4603 readings
+  No anomaly ground truth -- reporting alert volume, not accuracy.
+==============================================================================
+                   | episodes |  mod | emrg |  flagged readings |  raw SD
+------------------------------------------------------------------------------
+original           |       51 |   30 |   21 |   2155 ( 46.8%) |    3.82
++ SD floor         |       44 |   26 |   18 |   1957 ( 42.5%) |    4.50
++ bounded freeze   |       23 |   15 |    7 |   1028 ( 22.3%) |    4.79
+fixed 60-100 bpm   |        - |    - |    - |    829 ( 18.0%) |       -
+------------------------------------------------------------------------------
+Per-reading flag rate: 46.8% -> 22.3% across the two fixes.
+Note: this subject is a healthy adult performing daily activities
+(walking, cycling), so most remaining flags are activity-driven HR
+change, not pathology. This dataset bounds ALERT VOLUME; it cannot
+measure detection accuracy, because it carries no anomaly labels.
+
+==============================================================================
+Saved to revalidation_results.txt
+==============================================================================
